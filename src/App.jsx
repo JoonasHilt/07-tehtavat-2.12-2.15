@@ -38,6 +38,20 @@ const App = () => {
       });
   };
 
+  const removePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      addPersons
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id));
+        })
+        .catch((error) => {
+          console.log("Error deleting person:", error);
+          alert("An error occurred while deleting the person");
+        });
+    }
+  };
+
   const handleNameChange = (event) => {
     setNewName(event.target.value);
   };
@@ -71,7 +85,7 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} removePerson={removePerson} />
     </div>
   );
 };
