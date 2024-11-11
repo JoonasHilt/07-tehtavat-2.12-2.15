@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import addPersons from "./services/addPersons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,8 +11,8 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
+    addPersons.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
@@ -25,18 +25,16 @@ const App = () => {
 
     const newPerson = { name: newName, number: newNumber };
 
-    axios
-      .post("http://localhost:3001/persons", newPerson)
-      .then((response) => {
-        setPersons(persons.concat(response.data));
+    addPersons
+      .create(newPerson)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
         setNewName("");
         setNewNumber("");
       })
       .catch((error) => {
         console.log("Error adding person:", error);
-        alert(
-          "An error occured while adding the person, please try again later"
-        );
+        alert("An error occurred while adding the person");
       });
   };
 
